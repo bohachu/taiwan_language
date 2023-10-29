@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>簡體轉繁體、臺灣慣用語（詞彙持續補充當中）</title>
+    <style>
+        body {
+            font-size: 1.5rem; /* 將字體大小放大1.5倍 */
+        }
+
+        #inputText, #outputText {
+            width: 100%; /* 左右寬度滿版 */
+            height: calc(50vh - 2rem); /* 高度設置為全螢幕的一半減去一些空間 */
+            resize: none; /* 禁止調整大小 */
+        }
+
+        button {
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+<textarea id="inputText" placeholder="在此輸入文字"></textarea><br>
+<button id="convertButton">簡體轉繁體、臺灣慣用語（詞彙持續補充當中）</button><br>
+<textarea id="outputText" placeholder="轉換結果" readonly></textarea>
+
+<script>
+    async function convertFromCsv(file, text) {
+        const response = await fetch(file);
+        const data = await response.text();
+        const lines = data.split('\n');
+
+        let convertedText = text;
+        lines.forEach(line => {
+            const [ simplified, traditional ] = line.trim().split(',').map(s => s.trim());
+            convertedText = convertedText.split(simplified).join(traditional);
+        });
+        return convertedText;
+    }
+
+    async function convertFunction() {
+        let text = document.getElementById('inputText').value;
+
+        text = await convertFromCsv('st1275.csv', text);
+        text = await convertFromCsv('st3505.csv', text);
+        text = await convertFromCsv('taiwan_style.csv', text);
+
+        document.getElementById('outputText').value = text;
+    }
+
+    document.getElementById('convertButton').addEventListener('click', convertFunction);
+</script>
+
+</body>
+</html>
