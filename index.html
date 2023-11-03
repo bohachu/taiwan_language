@@ -34,6 +34,9 @@
 
         let convertedText = text;
         lines.forEach(line => {
+            if (line.trim() === '' || !line.includes(',')) {
+                return;
+            }
             const [ simplified, traditional ] = line.trim().split(',').map(s => s.trim());
             convertedText = convertedText.split(simplified).join(traditional);
         });
